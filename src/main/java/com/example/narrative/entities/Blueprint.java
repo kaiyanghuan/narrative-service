@@ -22,6 +22,9 @@ public class Blueprint {
     @Column(name = "id", length = 100)
     private String id = UUID.randomUUID().toString();
 
+    @Column(name = "name")
+    private String name;
+
     @Column(name = "share_type")
     @Enumerated(EnumType.STRING)
     private ShareType shareType;
