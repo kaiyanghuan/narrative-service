@@ -17,7 +17,7 @@ import java.util.UUID;
 @NoArgsConstructor
 @Entity
 @Table(name = "genre")
-public class Genre {
+public class Genre extends Auditable{
 
     @Id
     @Column(name = "id", length = 100)

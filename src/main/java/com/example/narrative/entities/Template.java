@@ -16,7 +16,7 @@ import java.util.UUID;
 @NoArgsConstructor
 @Entity
 @Table(name = "templates")
-public class Template {
+public class Template extends Auditable{
 
     @Id
     @Column(name = "id", length = 100)

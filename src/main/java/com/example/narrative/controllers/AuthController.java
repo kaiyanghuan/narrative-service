@@ -1,10 +1,13 @@
 package com.example.narrative.controllers;
 
 import com.example.narrative.authentications.JwtTokenProvider;
+import com.example.narrative.authentications.UserContext;
 import com.example.narrative.controllers.requests.LoginRequest;
 import com.example.narrative.controllers.responses.ApiResponse;
 import com.example.narrative.controllers.responses.JwtAuthenticationResponse;
+import com.example.narrative.controllers.responses.UserResponse;
 import com.example.narrative.services.UserService;
+import com.example.narrative.utils.ResponseHelper;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -12,10 +15,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @Slf4j
 @RestController
@@ -31,6 +31,9 @@ public class AuthController {
     @Autowired
     private JwtTokenProvider jwtTokenProvider;
 
+    @Autowired
+    private ResponseHelper responseHelper;
+
     @PostMapping("/login")
     public ResponseEntity<Object> login(@RequestBody LoginRequest loginRequest) {
         if (loginRequest.getUsername().isEmpty() || loginRequest.getPassword().isEmpty()) {
@@ -45,5 +48,10 @@ public class AuthController {
 
         String jwtToken = jwtTokenProvider.generateToken(authentication);
         return ResponseEntity.ok(new JwtAuthenticationResponse(jwtToken));
+    }
+
+    @GetMapping("/whoami")
+    public ResponseEntity<UserResponse> whoami() {
+        return ResponseEntity.ok(responseHelper.from(userService.getUserByName(UserContext.loggedInUsername())).toUserResponse());
     }
 }

@@ -13,7 +13,7 @@ import java.util.Date;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-public class Transactions {
+public class Transactions extends Auditable{
 
     private String id;
     private String fromUser;
