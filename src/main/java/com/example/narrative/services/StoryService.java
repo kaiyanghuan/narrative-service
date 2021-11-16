@@ -19,15 +19,16 @@ public class StoryService {
     @Autowired
     private UserService userService;
 
-    @Autowired
-    private ChapterService chapterService;
-
     public List<Story> getStories() {
         return storyRepository.findAllByUserId(userService.getUserId());
     }
 
     public Story getStory(UUID id) {
         return storyRepository.findById(id.toString()).orElseThrow(() -> new NotFoundException(id + " does not exist"));
+    }
+
+    public Story getStory(String id) {
+        return storyRepository.findById(id).orElseThrow(() -> new NotFoundException(id + " does not exist"));
     }
 
     public Story create(Story story) {
@@ -61,7 +62,7 @@ public class StoryService {
         existingStory.setIcon(otherStory.getIcon());
     }
 
-    public Story delete(UUID id){
+    public Story delete(UUID id) {
         Story story = getStory(id);
         storyRepository.delete(story);
         return story;

@@ -3,18 +3,17 @@ package com.example.narrative.utils;
 import com.example.narrative.controllers.responses.*;
 import com.example.narrative.entities.*;
 import com.example.narrative.entities.enums.State;
-import com.example.narrative.exceptions.ConversionException;
 import com.example.narrative.services.FieldService;
 import com.example.narrative.services.InstructionService;
 import com.example.narrative.services.UserService;
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.core.type.TypeReference;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import java.util.Comparator;
 import java.util.List;
 import java.util.stream.Collectors;
+
+import static java.util.stream.Collectors.groupingBy;
 
 @Component
 public class ResponseHelper {
@@ -28,10 +27,7 @@ public class ResponseHelper {
     @Autowired
     private UserService userService;
 
-    @Autowired
-    private ObjectMapper objectMapper;
-
-    public class ChapterHelper {
+    public static class ChapterHelper {
         private final Chapter chapter;
 
         public ChapterHelper(Chapter chapter) {
@@ -54,9 +50,9 @@ public class ResponseHelper {
                     .name(chapter.getName())
                     .description(chapter.getDescription())
                     .storyId(chapter.getStoryId())
-                    .addOnInstructions(convertStringToInstructions(chapter.getAddOnInstructions()))
-                    .chooseOneInstructions(convertStringToInstructions(chapter.getChooseOneInstructions()))
-                    .requiredInstructions(convertStringToInstructions(chapter.getRequiredInstructions()))
+                    .addOnInstructions(ConversionHelper.convertStringToInstructions(chapter.getAddOnInstructions()))
+                    .chooseOneInstructions(ConversionHelper.convertStringToInstructions(chapter.getChooseOneInstructions()))
+                    .requiredInstructions(ConversionHelper.convertStringToInstructions(chapter.getRequiredInstructions()))
                     .transactionPattern(chapter.getTransactionPattern())
                     .state(chapter.getState())
                     .build();
@@ -101,7 +97,7 @@ public class ResponseHelper {
         }
 
         private List<InstructionResponse> generatingInstructionResponses(String instructions) {
-            return convertStringToList(instructions).stream()
+            return ConversionHelper.convertStringToList(instructions).stream()
                     .map(instruction -> instructionService.getInstruction(instruction))
                     .map(this::convertToInstructionResponse)
                     .collect(Collectors.toList());
@@ -113,7 +109,7 @@ public class ResponseHelper {
                     .name(instruction.getName())
                     .description(instruction.getDescription())
                     .state(State.INACTIVE)
-                    .fields(convertStringToList(instruction.getFields()).stream()
+                    .fields(ConversionHelper.convertStringToList(instruction.getFields()).stream()
                             .map(field -> fieldService.getField(field))
                             .map(ResponseHelper.this::convertToFieldResponse)
                             .collect(Collectors.toList()))
@@ -189,7 +185,7 @@ public class ResponseHelper {
                     .id(instruction.getId())
                     .name(instruction.getName())
                     .description(instruction.getDescription())
-                    .fields(convertStringToList(instruction.getFields()).stream()
+                    .fields(ConversionHelper.convertStringToList(instruction.getFields()).stream()
                             .map(field -> fieldService.getField(field))
                             .map(ResponseHelper.this::convertToFieldResponse)
                             .collect(Collectors.toList()))
@@ -215,7 +211,7 @@ public class ResponseHelper {
         }
     }
 
-    public class BlueprintResponseHelper {
+    public static class BlueprintResponseHelper {
         private final Blueprint blueprint;
         private final List<Template> templates;
 
@@ -233,7 +229,7 @@ public class ResponseHelper {
                     .id(blueprint.getId())
                     .name(blueprint.getName())
                     .shareType(blueprint.getShareType())
-                    .tags(convertStringToList(blueprint.getTags()))
+                    .tags(ConversionHelper.convertStringToList(blueprint.getTags()))
                     .stars(blueprint.getStars())
                     .userId(blueprint.getUserId())
                     .username(blueprint.getUsername())
@@ -257,7 +253,7 @@ public class ResponseHelper {
         }
     }
 
-    public class TemplateResponseHelper {
+    public static class TemplateResponseHelper {
         private final Template template;
 
         public TemplateResponseHelper(Template Template) {
@@ -280,30 +276,63 @@ public class ResponseHelper {
                     .name(template.getName())
                     .description(template.getDescription())
                     .blueprintId(template.getBlueprintId())
-                    .addOnInstructions(convertStringToInstructions(template.getAddOnInstructions()))
-                    .chooseOneInstructions(convertStringToInstructions(template.getChooseOneInstructions()))
-                    .requiredInstructions(convertStringToInstructions(template.getRequiredInstructions()))
+                    .addOnInstructions(ConversionHelper.convertStringToInstructions(template.getAddOnInstructions()))
+                    .chooseOneInstructions(ConversionHelper.convertStringToInstructions(template.getChooseOneInstructions()))
+                    .requiredInstructions(ConversionHelper.convertStringToInstructions(template.getRequiredInstructions()))
                     .transactionPattern(template.getTransactionPattern())
                     .state(template.getState())
                     .build();
         }
     }
 
-    private List<String> convertStringToList(String value) {
-        try {
-            return objectMapper.readValue(value, new TypeReference<List<String>>() {
-            });
-        } catch (JsonProcessingException e) {
-            throw new ConversionException("Unable to convert: " + value);
+    public static class TransactionHistoryResponseHelper {
+        private final List<Transaction> transactions;
+
+        public TransactionHistoryResponseHelper(List<Transaction> transactions) {
+            this.transactions = transactions;
+        }
+
+        public TransactionHistoryResponse toTransactionHistoryResponse() {
+            return TransactionHistoryResponse.builder()
+                    .transactionHistories(transactions.stream().collect(groupingBy(Transaction::getTransactionDate))
+                            .entrySet().stream()
+                            .map(entry -> TransactionHistory.builder()
+                                    .transactionDate(entry.getKey())
+                                    .transactionDetails(entry.getValue().stream()
+                                            .map(transaction -> TransactionDetail.builder()
+                                                    .amount(transaction.getAmount())
+                                                    .description(transaction.getDescription())
+                                                    .creditType(transaction.getCreditType())
+                                                    .transactionType(transaction.getTransactionType())
+                                                    .build())
+                                            .collect(Collectors.toList()))
+                                    .build())
+                            .sorted(Comparator.comparing(TransactionHistory::getTransactionDate))
+                            .collect(Collectors.toList()))
+                    .build();
         }
     }
 
-    private List<InstructionResponse> convertStringToInstructions(String instructions) {
-        try {
-            return objectMapper.readValue(instructions, new TypeReference<List<InstructionResponse>>() {
-            });
-        } catch (JsonProcessingException e) {
-            throw new ConversionException("Unable to convert: " + instructions);
+    public static class TransactionResponseHelper {
+        private final Transaction transaction;
+
+        public TransactionResponseHelper(Transaction Transaction) {
+            this.transaction = Transaction;
+        }
+
+        public TransactionResponse toTransactionResponse() {
+            return TransactionResponse.builder()
+                    .id(transaction.getId())
+                    .fromAccount(transaction.getFromAccount())
+                    .toAccount(transaction.getToAccount())
+                    .amount(transaction.getAmount())
+                    .description(transaction.getDescription())
+                    .creditType(transaction.getCreditType())
+                    .transactionDate(transaction.getTransactionDate())
+                    .transactionType(transaction.getTransactionType())
+                    .storyId(transaction.getStoryId())
+                    .chapterId(transaction.getChapterId())
+                    .build();
         }
     }
 
@@ -350,5 +379,13 @@ public class ResponseHelper {
 
     public TemplateResponseHelper from(Template template) {
         return new TemplateResponseHelper(template);
+    }
+
+    public TransactionResponseHelper from(Transaction transaction) {
+        return new TransactionResponseHelper(transaction);
+    }
+
+    public TransactionHistoryResponseHelper from(List<Transaction> transactions) {
+        return new TransactionHistoryResponseHelper(transactions);
     }
 }

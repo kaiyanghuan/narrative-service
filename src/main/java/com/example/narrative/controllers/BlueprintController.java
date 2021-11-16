@@ -56,12 +56,12 @@ public class BlueprintController {
         return ok(blueprintService.getBlueprints());
     }
 
-    @PostMapping("/{keyword}/search")
-    public ResponseEntity<Page<Blueprint>> searchBlueprint(@RequestBody BlueprintQueryRequest blueprintQueryRequest) {
-        AppPageRequest pageRequest = blueprintQueryRequest.getPageRequest();
-        Pageable pageable = PageRequest.of(pageRequest.getPage(), pageRequest.getSize(), pageRequest.getDirection(), pageRequest.getField());
-        return ok(blueprintService.searchBlueprint(blueprintQueryRequest.getName(), pageable));
-    }
+//    @PostMapping("/search")
+//    public ResponseEntity<Page<Blueprint>> searchBlueprint(@RequestBody BlueprintQueryRequest blueprintQueryRequest) {
+//        AppPageRequest pageRequest = blueprintQueryRequest.getPageRequest();
+//        Pageable pageable = PageRequest.of(pageRequest.getPage(), pageRequest.getSize(), pageRequest.getDirection(), pageRequest.getField());
+//        return ok(blueprintService.searchBlueprint(blueprintQueryRequest.getName(), pageable));
+//    }
 
     @GetMapping("/{id}")
     public ResponseEntity<BlueprintResponse> getBlueprint(@PathVariable UUID id) {

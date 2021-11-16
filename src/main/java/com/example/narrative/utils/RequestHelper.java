@@ -4,16 +4,13 @@ import com.example.narrative.controllers.requests.*;
 import com.example.narrative.controllers.responses.ChapterResponse;
 import com.example.narrative.controllers.responses.InstructionResponse;
 import com.example.narrative.entities.*;
+import com.example.narrative.entities.enums.CreditType;
 import com.example.narrative.entities.enums.State;
-import com.example.narrative.exceptions.BusinessException;
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.util.Date;
-import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 import java.util.concurrent.atomic.AtomicReference;
@@ -21,10 +18,7 @@ import java.util.concurrent.atomic.AtomicReference;
 @Component
 public class RequestHelper {
 
-    @Autowired
-    private ObjectMapper objectMapper;
-
-    public class GenreRequestHelper {
+    public static class GenreRequestHelper {
         private final GenreRequest genreRequest;
 
         public GenreRequestHelper(GenreRequest genreRequest) {
@@ -35,15 +29,15 @@ public class RequestHelper {
             return Genre.builder()
                     .name(genreRequest.getName())
                     .description(genreRequest.getDescription())
-                    .addOnInstructions(convertListToString(genreRequest.getAddOnInstructions()))
-                    .chooseOneInstructions(convertListToString(genreRequest.getChooseOneInstructions()))
-                    .requiredInstructions(convertListToString(genreRequest.getRequiredInstructions()))
+                    .addOnInstructions(ConversionHelper.convertListToString(genreRequest.getAddOnInstructions()))
+                    .chooseOneInstructions(ConversionHelper.convertListToString(genreRequest.getChooseOneInstructions()))
+                    .requiredInstructions(ConversionHelper.convertListToString(genreRequest.getRequiredInstructions()))
                     .build();
         }
     }
 
 
-    public class InstructionRequestHelper {
+    public static class InstructionRequestHelper {
         private final InstructionRequest instructionRequest;
 
         public InstructionRequestHelper(InstructionRequest instructionRequest) {
@@ -54,7 +48,7 @@ public class RequestHelper {
             return Instruction.builder()
                     .name(instructionRequest.getName())
                     .description(instructionRequest.getDescription())
-                    .fields(convertListToString(instructionRequest.getFields()))
+                    .fields(ConversionHelper.convertListToString(instructionRequest.getFields()))
                     .displayFormat(instructionRequest.getDisplayFormat())
                     .build();
         }
@@ -76,7 +70,7 @@ public class RequestHelper {
         }
     }
 
-    public class ChapterRequestHelper {
+    public static class ChapterRequestHelper {
         private final ChapterRequest chapterRequest;
 
         public ChapterRequestHelper(ChapterRequest chapterRequest) {
@@ -105,16 +99,16 @@ public class RequestHelper {
             return Chapter.builder()
                     .name(chapterName)
                     .description(chapterDescription)
-                    .addOnInstructions(convertInstructionsToString(chapter.getAddOnInstructions()))
-                    .chooseOneInstructions(convertInstructionsToString(chapter.getChooseOneInstructions()))
-                    .requiredInstructions(convertInstructionsToString(chapter.getRequiredInstructions()))
+                    .addOnInstructions(ConversionHelper.convertInstructionsToString(chapter.getAddOnInstructions()))
+                    .chooseOneInstructions(ConversionHelper.convertInstructionsToString(chapter.getChooseOneInstructions()))
+                    .requiredInstructions(ConversionHelper.convertInstructionsToString(chapter.getRequiredInstructions()))
                     .transactionPattern(chapter.getTransactionPattern())
                     .state(State.ACTIVE)
                     .build();
         }
     }
 
-    public class BlueprintRequestHelper {
+    public static class BlueprintRequestHelper {
         private final BlueprintRequest blueprintRequest;
 
         public BlueprintRequestHelper(BlueprintRequest blueprintRequest) {
@@ -127,7 +121,7 @@ public class RequestHelper {
                     .name(blueprintRequest.getName())
                     .storyName(blueprintRequest.getStoryName())
                     .storyDescription(blueprintRequest.getStoryDescription())
-                    .tags(convertListToString(blueprintRequest.getTags()))
+                    .tags(ConversionHelper.convertListToString(blueprintRequest.getTags()))
                     .shareType(blueprintRequest.getShareType())
                     .sharedDate(new Date())
                     .icon(blueprintRequest.getIcon())
@@ -137,19 +131,45 @@ public class RequestHelper {
         }
     }
 
-    private String convertListToString(List<String> stringList) {
-        try {
-            return objectMapper.writeValueAsString(stringList);
-        } catch (JsonProcessingException e) {
-            throw new BusinessException("");
+    public static class TransactionRequestHelper {
+        private final TransactionRequest transactionRequest;
+
+        public TransactionRequestHelper(TransactionRequest transactionRequest) {
+            this.transactionRequest = transactionRequest;
+        }
+
+        public Transaction toTransaction() {
+            return Transaction.builder()
+                    .id(UUID.randomUUID().toString())
+                    .fromAccount(transactionRequest.getFromAccount())
+                    .toAccount(transactionRequest.getToAccount())
+                    .amount(transactionRequest.getAmount())
+                    .description(transactionRequest.getDescription())
+                    .transactionDate(transactionRequest.getTransactionDate())
+                    .creditType((transactionRequest.getAmount().compareTo(BigDecimal.ZERO) < 0) ? CreditType.DEBIT : CreditType.CREDIT)
+                    .build();
         }
     }
 
-    private String convertInstructionsToString(List<InstructionResponse> instructionResponses) {
-        try {
-            return objectMapper.writeValueAsString(instructionResponses);
-        } catch (JsonProcessingException e) {
-            throw new BusinessException("Unable to convert: " + instructionResponses.toString());
+    public static class TransactionTriggerRequestHelper {
+        private final TransactionTriggerRequest transactionRequest;
+
+        public TransactionTriggerRequestHelper(TransactionTriggerRequest transactionRequest) {
+            this.transactionRequest = transactionRequest;
+        }
+
+        public Transaction toTransaction() {
+            return Transaction.builder()
+                    .id(UUID.randomUUID().toString())
+                    .fromAccount(transactionRequest.getFromAccount())
+                    .toAccount(transactionRequest.getToAccount())
+                    .amount(transactionRequest.getAmount())
+                    .description(transactionRequest.getDescription())
+                    .transactionDate(new Date())
+                    .chapterId(transactionRequest.getChapterId())
+                    .transactionType(transactionRequest.getTransactionType())
+                    .creditType((transactionRequest.getAmount().compareTo(BigDecimal.ZERO) < 0) ? CreditType.DEBIT : CreditType.CREDIT)
+                    .build();
         }
     }
 
@@ -171,5 +191,13 @@ public class RequestHelper {
 
     public BlueprintRequestHelper from(BlueprintRequest blueprintRequest) {
         return new BlueprintRequestHelper(blueprintRequest);
+    }
+
+    public TransactionRequestHelper from(TransactionRequest transactionRequest) {
+        return new TransactionRequestHelper(transactionRequest);
+    }
+
+    public TransactionTriggerRequestHelper from(TransactionTriggerRequest transactionRequest) {
+        return new TransactionTriggerRequestHelper(transactionRequest);
     }
 }

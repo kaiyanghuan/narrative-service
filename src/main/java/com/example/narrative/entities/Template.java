@@ -2,6 +2,7 @@ package com.example.narrative.entities;
 
 import com.example.narrative.entities.enums.State;
 import com.example.narrative.entities.enums.TransactionPattern;
+import com.example.narrative.entities.enums.TransactionType;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -16,7 +17,7 @@ import java.util.UUID;
 @NoArgsConstructor
 @Entity
 @Table(name = "templates")
-public class Template extends Auditable{
+public class Template extends Auditable {
 
     @Id
     @Column(name = "id", length = 100)
@@ -43,6 +44,10 @@ public class Template extends Auditable{
     @Column(name = "transaction_pattern")
     @Enumerated(EnumType.STRING)
     private TransactionPattern transactionPattern;
+
+    @Column(name = "transaction_type")
+    @Enumerated(EnumType.STRING)
+    private TransactionType transactionType;
 
     @Column(name = "state")
     @Enumerated(EnumType.STRING)

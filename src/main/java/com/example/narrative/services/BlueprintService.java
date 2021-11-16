@@ -29,9 +29,9 @@ public class BlueprintService {
         return blueprintRepository.findAll();
     }
 
-    public Page<Blueprint> searchBlueprint(String keyword, Pageable pageable) {
-        return blueprintRepository.findAll((Specification) searchKeyword(keyword), pageable);
-    }
+//    public Page<Blueprint> searchBlueprint(String keyword, Pageable pageable) {
+//        return blueprintRepository.findAll((Specification) searchKeyword(keyword), pageable);
+//    }
 
     public Blueprint getBlueprint(UUID id) {
         return blueprintRepository.findById(id.toString()).orElseThrow(() -> new NotFoundException(id + " does not exist"));

@@ -5,7 +5,6 @@ import com.example.narrative.entities.Template;
 import com.example.narrative.entities.enums.State;
 import com.example.narrative.exceptions.NotFoundException;
 import com.example.narrative.repositories.ChapterRepository;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -14,9 +13,6 @@ import java.util.UUID;
 
 @Service
 public class ChapterService {
-
-    @Autowired
-    private ObjectMapper objectMapper;
 
     @Autowired
     private ChapterRepository chapterRepository;
@@ -91,13 +87,13 @@ public class ChapterService {
         existingChapter.setState(otherChapter.getState());
     }
 
-    public List<Chapter> deleteAllInStory(UUID storyId){
+    public List<Chapter> deleteAllInStory(UUID storyId) {
         List<Chapter> chapters = getChapters(storyId.toString());
         chapters.forEach(chapter -> chapterRepository.delete(chapter));
         return chapters;
     }
 
-    public Chapter delete(UUID id){
+    public Chapter delete(UUID id) {
         Chapter chapter = getChapter(id);
         chapterRepository.delete(chapter);
         return chapter;
