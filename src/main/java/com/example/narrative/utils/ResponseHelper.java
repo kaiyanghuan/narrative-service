@@ -2,8 +2,8 @@ package com.example.narrative.utils;
 
 import com.example.narrative.controllers.responses.*;
 import com.example.narrative.entities.*;
+import com.example.narrative.entities.enums.State;
 import com.example.narrative.exceptions.ConversionException;
-import com.example.narrative.services.ChapterService;
 import com.example.narrative.services.FieldService;
 import com.example.narrative.services.InstructionService;
 import com.example.narrative.services.UserService;
@@ -29,9 +29,6 @@ public class ResponseHelper {
     private UserService userService;
 
     @Autowired
-    private ChapterService chapterService;
-
-    @Autowired
     private ObjectMapper objectMapper;
 
     public class ChapterHelper {
@@ -46,6 +43,7 @@ public class ResponseHelper {
                     .id(chapter.getId())
                     .name(chapter.getName())
                     .description(chapter.getDescription())
+                    .transactionPattern(chapter.getTransactionPattern())
                     .state(chapter.getState())
                     .build();
         }
@@ -59,11 +57,11 @@ public class ResponseHelper {
                     .addOnInstructions(convertStringToInstructions(chapter.getAddOnInstructions()))
                     .chooseOneInstructions(convertStringToInstructions(chapter.getChooseOneInstructions()))
                     .requiredInstructions(convertStringToInstructions(chapter.getRequiredInstructions()))
+                    .transactionPattern(chapter.getTransactionPattern())
                     .state(chapter.getState())
                     .build();
         }
     }
-
 
     public class GenreHelper {
         private final Genre genre;
@@ -125,9 +123,15 @@ public class ResponseHelper {
 
     public class StoryResponseHelper {
         private final Story story;
+        private List<Chapter> chapters;
 
         public StoryResponseHelper(Story story) {
             this.story = story;
+        }
+
+        public StoryResponseHelper(Story story, List<Chapter> chapters) {
+            this.story = story;
+            this.chapters = chapters;
         }
 
         public BriefStoryResponse toBriefStoryResponse() {
@@ -140,7 +144,6 @@ public class ResponseHelper {
         }
 
         public StoryResponse toStoryResponse() {
-            List<Chapter> chapters = chapterService.getChapters(story.getId());
             return StoryResponse.builder()
                     .id(story.getId())
                     .name(story.getName())
@@ -157,6 +160,7 @@ public class ResponseHelper {
                     .id(chapter.getId())
                     .name(chapter.getName())
                     .description(chapter.getDescription())
+                    .transactionPattern(chapter.getTransactionPattern())
                     .state(chapter.getState())
                     .build();
         }
@@ -192,7 +196,7 @@ public class ResponseHelper {
         }
     }
 
-    public class UserResponseHelper {
+    public static class UserResponseHelper {
         private final User user;
 
         public UserResponseHelper(User User) {
@@ -205,6 +209,80 @@ public class ResponseHelper {
                     .name(user.getName())
                     .accessCode(user.getAccessCode())
                     .masterAccount(user.getMasterAccount())
+                    .build();
+        }
+    }
+
+    public class BlueprintResponseHelper {
+        private final Blueprint blueprint;
+        private final List<Template> templates;
+
+        public BlueprintResponseHelper(Blueprint blueprint, List<Template> templates) {
+            this.blueprint = blueprint;
+            this.templates = templates;
+        }
+
+        public BlueprintResponse toBlueprintResponse() {
+            List<BriefTemplateResponse> templateResponses = templates.stream()
+                    .map(this::toBriefTemplateResponse)
+                    .collect(Collectors.toList());
+
+            return BlueprintResponse.builder()
+                    .id(blueprint.getId())
+                    .name(blueprint.getName())
+                    .shareType(blueprint.getShareType())
+                    .tags(convertStringToList(blueprint.getTags()))
+                    .stars(blueprint.getStars())
+                    .userId(blueprint.getUserId())
+                    .username(blueprint.getUsername())
+                    .sharedDate(blueprint.getSharedDate())
+                    .icon(blueprint.getIcon())
+                    .adoptionRate(blueprint.getAdoptionRate())
+                    .storyName(blueprint.getStoryName())
+                    .storyDescription(blueprint.getStoryDescription())
+                    .templates(templateResponses)
+                    .build();
+        }
+
+        private BriefTemplateResponse toBriefTemplateResponse(Template template) {
+            return BriefTemplateResponse.builder()
+                    .id(template.getId())
+                    .name(template.getName())
+                    .description(template.getDescription())
+                    .transactionPattern(template.getTransactionPattern())
+                    .state(template.getState())
+                    .build();
+        }
+    }
+
+    public class TemplateResponseHelper {
+        private final Template template;
+
+        public TemplateResponseHelper(Template Template) {
+            this.template = Template;
+        }
+
+        public BriefTemplateResponse toBriefTemplateResponse() {
+            return BriefTemplateResponse.builder()
+                    .id(template.getId())
+                    .name(template.getName())
+                    .description(template.getDescription())
+                    .transactionPattern(template.getTransactionPattern())
+                    .state(template.getState())
+                    .build();
+        }
+
+        public TemplateResponse toTemplateResponse() {
+            return TemplateResponse.builder()
+                    .id(template.getId())
+                    .name(template.getName())
+                    .description(template.getDescription())
+                    .blueprintId(template.getBlueprintId())
+                    .addOnInstructions(convertStringToInstructions(template.getAddOnInstructions()))
+                    .chooseOneInstructions(convertStringToInstructions(template.getChooseOneInstructions()))
+                    .requiredInstructions(convertStringToInstructions(template.getRequiredInstructions()))
+                    .transactionPattern(template.getTransactionPattern())
+                    .state(template.getState())
                     .build();
         }
     }
@@ -252,11 +330,23 @@ public class ResponseHelper {
         return new StoryResponseHelper(story);
     }
 
+    public StoryResponseHelper from(Story story, List<Chapter> chapters) {
+        return new StoryResponseHelper(story, chapters);
+    }
+
     public UserResponseHelper from(User user) {
         return new UserResponseHelper(user);
     }
 
     public InstructionResponseHelper from(Instruction instruction) {
         return new InstructionResponseHelper(instruction);
+    }
+
+    public BlueprintResponseHelper from(Blueprint blueprint, List<Template> templates) {
+        return new BlueprintResponseHelper(blueprint, templates);
+    }
+
+    public TemplateResponseHelper from(Template template) {
+        return new TemplateResponseHelper(template);
     }
 }

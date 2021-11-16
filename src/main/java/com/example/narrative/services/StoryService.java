@@ -1,5 +1,6 @@
 package com.example.narrative.services;
 
+import com.example.narrative.entities.Blueprint;
 import com.example.narrative.entities.Story;
 import com.example.narrative.exceptions.NotFoundException;
 import com.example.narrative.repositories.StoryRepository;
@@ -36,6 +37,18 @@ public class StoryService {
     public Story create(Story story) {
         story.setId(UUID.randomUUID().toString());
         story.setUserId(userService.getUserId());
+        story.generateVirtualAccount();
+        return storyRepository.save(story);
+    }
+
+    public Story create(Blueprint blueprint) {
+        Story story = Story.builder()
+                .id(UUID.randomUUID().toString())
+                .name(blueprint.getStoryName())
+                .description(blueprint.getStoryDescription())
+                .icon(blueprint.getIcon())
+                .userId(userService.getUserId())
+                .build();
         story.generateVirtualAccount();
         return storyRepository.save(story);
     }

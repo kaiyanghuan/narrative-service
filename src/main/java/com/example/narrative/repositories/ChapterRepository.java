@@ -11,5 +11,6 @@ import java.util.Optional;
 @Repository
 public interface ChapterRepository extends JpaRepository<Chapter, String> {
     List<Chapter> findByStoryId(String storyId);
+
     Optional<Chapter> findByName(String name);
 }

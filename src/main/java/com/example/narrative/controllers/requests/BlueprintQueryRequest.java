@@ -1,6 +1,5 @@
 package com.example.narrative.controllers.requests;
 
-
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -10,11 +9,8 @@ import java.util.List;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class GenreRequest {
-
+public class BlueprintQueryRequest {
     private String name;
-    private String description;
-    private List<String> requiredInstructions;
-    private List<String> chooseOneInstructions;
-    private List<String> addOnInstructions;
+    private List<String> tags;
+    private AppPageRequest pageRequest;
 }

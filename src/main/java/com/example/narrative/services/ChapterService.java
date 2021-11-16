@@ -1,6 +1,8 @@
 package com.example.narrative.services;
 
 import com.example.narrative.entities.Chapter;
+import com.example.narrative.entities.Template;
+import com.example.narrative.entities.enums.State;
 import com.example.narrative.exceptions.NotFoundException;
 import com.example.narrative.repositories.ChapterRepository;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -33,6 +35,46 @@ public class ChapterService {
         return chapterRepository.save(chapter);
     }
 
+    public Chapter create(Template template, String storyId) {
+        Chapter chapter = Chapter.builder()
+                .id(UUID.randomUUID().toString())
+                .name(template.getName())
+                .description(template.getDescription())
+                .storyId(storyId)
+                .addOnInstructions(template.getAddOnInstructions())
+                .chooseOneInstructions(template.getChooseOneInstructions())
+                .requiredInstructions(template.getRequiredInstructions())
+                .transactionPattern(template.getTransactionPattern())
+                .state(template.getState())
+                .build();
+        chapter.setId(UUID.randomUUID().toString());
+        chapter.setStoryId(storyId);
+        return chapterRepository.save(chapter);
+    }
+
+    public Chapter move(UUID id, String storyId) {
+        Chapter chapter = getChapter(id);
+        chapter.setStoryId(storyId);
+        return chapterRepository.save(chapter);
+    }
+
+    public Chapter copy(UUID id, String storyId) {
+        Chapter existingChapter = getChapter(id);
+        Chapter chapter = Chapter.builder()
+                .id(UUID.randomUUID().toString())
+                .name(existingChapter.getName())
+                .description(existingChapter.getDescription())
+                .storyId(storyId)
+                .addOnInstructions(existingChapter.getAddOnInstructions())
+                .chooseOneInstructions(existingChapter.getChooseOneInstructions())
+                .requiredInstructions(existingChapter.getRequiredInstructions())
+                .transactionPattern(existingChapter.getTransactionPattern())
+                .state(State.INACTIVE)
+                .build();
+        return chapterRepository.save(chapter);
+    }
+
+
     public Chapter update(Chapter otherChapter, UUID id) {
         Chapter existingChapter = getChapter(id);
         updateWith(otherChapter, existingChapter);
@@ -45,6 +87,7 @@ public class ChapterService {
         existingChapter.setAddOnInstructions(otherChapter.getAddOnInstructions());
         existingChapter.setRequiredInstructions(otherChapter.getRequiredInstructions());
         existingChapter.setChooseOneInstructions(otherChapter.getChooseOneInstructions());
+        existingChapter.setTransactionPattern(otherChapter.getTransactionPattern());
         existingChapter.setState(otherChapter.getState());
     }
 }

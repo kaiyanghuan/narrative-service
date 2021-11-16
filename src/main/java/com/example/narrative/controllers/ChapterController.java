@@ -46,6 +46,16 @@ public class ChapterController {
                 .toChapterResponse());
     }
 
+    @PostMapping("/{id}/story/{storyId}/move")
+    public ResponseEntity<ChapterResponse> moveChapter(@PathVariable UUID id, @PathVariable String storyId) {
+        return ok(responseHelper.from(chapterService.move(id, storyId)).toChapterResponse());
+    }
+
+    @PostMapping("/{id}/story/{storyId}/copy")
+    public ResponseEntity<ChapterResponse> copyChapter(@PathVariable UUID id, @PathVariable String storyId) {
+        return ok(responseHelper.from(chapterService.copy(id, storyId)).toChapterResponse());
+    }
+
     @PutMapping("/{id}")
     public ResponseEntity<ChapterResponse> updateChapter(@RequestBody ChapterRequest chapterRequest, @PathVariable UUID id) {
         return ok(responseHelper.from(chapterService.update(requestHelper.from(chapterRequest).toChapter(), id))

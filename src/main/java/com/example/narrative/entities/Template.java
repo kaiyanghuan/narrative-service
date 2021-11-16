@@ -1,6 +1,5 @@
 package com.example.narrative.entities;
 
-
 import com.example.narrative.entities.enums.State;
 import com.example.narrative.entities.enums.TransactionPattern;
 import lombok.AllArgsConstructor;
@@ -16,15 +15,15 @@ import java.util.UUID;
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
-@Table(name = "chapters")
-public class Chapter {
+@Table(name = "templates")
+public class Template {
 
     @Id
     @Column(name = "id", length = 100)
     private String id = UUID.randomUUID().toString();
 
-    @Column(name = "story_id")
-    private String storyId;
+    @Column(name = "blueprint_id")
+    private String blueprintId;
 
     @Column(name = "name")
     private String name;

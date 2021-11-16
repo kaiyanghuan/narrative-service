@@ -1,19 +1,22 @@
 package com.example.narrative.utils;
 
-import com.example.narrative.controllers.requests.ChapterRequest;
-import com.example.narrative.controllers.requests.GenreRequest;
-import com.example.narrative.controllers.requests.InstructionRequest;
-import com.example.narrative.controllers.requests.StoryRequest;
+import com.example.narrative.controllers.requests.*;
 import com.example.narrative.controllers.responses.ChapterResponse;
 import com.example.narrative.controllers.responses.InstructionResponse;
 import com.example.narrative.entities.*;
+import com.example.narrative.entities.enums.State;
 import com.example.narrative.exceptions.BusinessException;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import java.math.BigInteger;
+import java.util.Date;
 import java.util.List;
+import java.util.Optional;
+import java.util.UUID;
+import java.util.concurrent.atomic.AtomicReference;
 
 @Component
 public class RequestHelper {
@@ -22,7 +25,7 @@ public class RequestHelper {
     private ObjectMapper objectMapper;
 
     public class GenreRequestHelper {
-        private GenreRequest genreRequest;
+        private final GenreRequest genreRequest;
 
         public GenreRequestHelper(GenreRequest genreRequest) {
             this.genreRequest = genreRequest;
@@ -41,7 +44,7 @@ public class RequestHelper {
 
 
     public class InstructionRequestHelper {
-        private InstructionRequest instructionRequest;
+        private final InstructionRequest instructionRequest;
 
         public InstructionRequestHelper(InstructionRequest instructionRequest) {
             this.instructionRequest = instructionRequest;
@@ -57,8 +60,8 @@ public class RequestHelper {
         }
     }
 
-    public class StoryRequestHelper {
-        private StoryRequest storyRequest;
+    public static class StoryRequestHelper {
+        private final StoryRequest storyRequest;
 
         public StoryRequestHelper(StoryRequest StoryRequest) {
             this.storyRequest = StoryRequest;
@@ -74,7 +77,7 @@ public class RequestHelper {
     }
 
     public class ChapterRequestHelper {
-        private ChapterRequest chapterRequest;
+        private final ChapterRequest chapterRequest;
 
         public ChapterRequestHelper(ChapterRequest chapterRequest) {
             this.chapterRequest = chapterRequest;
@@ -82,13 +85,54 @@ public class RequestHelper {
 
         public Chapter toChapter() {
             ChapterResponse chapter = chapterRequest.getChapter();
+            AtomicReference<String> name = new AtomicReference<>();
+            AtomicReference<String> description = new AtomicReference<>();
+
+            Optional<InstructionResponse> instructionResponseOptional = chapter.getRequiredInstructions().stream()
+                    .filter(instruction -> instruction.getName().equals("Title")).findAny();
+            instructionResponseOptional.ifPresent(instructionResponse -> instructionResponse.getFields()
+                    .forEach(field -> {
+                        if (field.getFieldName().equals("title")) {
+                            name.set(field.getValue());
+                        }
+                        if (field.getFieldName().equals("description")) {
+                            description.set(field.getValue());
+                        }
+                    }));
+            String chapterName = (name.get() == null || name.get().equals("")) ? chapter.getName() : name.get();
+            String chapterDescription = (description.get() == null || description.get().equals("")) ? chapter.getName() : description.get();
+
             return Chapter.builder()
-                    .name(chapter.getName())
-                    .description(chapter.getDescription())
+                    .name(chapterName)
+                    .description(chapterDescription)
                     .addOnInstructions(convertInstructionsToString(chapter.getAddOnInstructions()))
                     .chooseOneInstructions(convertInstructionsToString(chapter.getChooseOneInstructions()))
                     .requiredInstructions(convertInstructionsToString(chapter.getRequiredInstructions()))
+                    .transactionPattern(chapter.getTransactionPattern())
                     .state(State.ACTIVE)
+                    .build();
+        }
+    }
+
+    public class BlueprintRequestHelper {
+        private final BlueprintRequest blueprintRequest;
+
+        public BlueprintRequestHelper(BlueprintRequest blueprintRequest) {
+            this.blueprintRequest = blueprintRequest;
+        }
+
+        public Blueprint toBlueprint() {
+            return Blueprint.builder()
+                    .id(UUID.randomUUID().toString())
+                    .name(blueprintRequest.getName())
+                    .storyName(blueprintRequest.getStoryName())
+                    .storyDescription(blueprintRequest.getStoryDescription())
+                    .tags(convertListToString(blueprintRequest.getTags()))
+                    .shareType(blueprintRequest.getShareType())
+                    .sharedDate(new Date())
+                    .icon(blueprintRequest.getIcon())
+                    .adoptionRate(BigInteger.ZERO)
+                    .stars(4)
                     .build();
         }
     }
@@ -123,5 +167,9 @@ public class RequestHelper {
 
     public ChapterRequestHelper from(ChapterRequest chapterRequest) {
         return new ChapterRequestHelper(chapterRequest);
+    }
+
+    public BlueprintRequestHelper from(BlueprintRequest blueprintRequest) {
+        return new BlueprintRequestHelper(blueprintRequest);
     }
 }

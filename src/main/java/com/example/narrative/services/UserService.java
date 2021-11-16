@@ -8,7 +8,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
-import java.util.UUID;
 
 @Service
 public class UserService {
@@ -51,7 +50,7 @@ public class UserService {
         existingUser.setMasterAccount(otherUser.getMasterAccount());
     }
 
-    public String getUserId(){
+    public String getUserId() {
         return getUserByName(UserContext.loggedInUsername()).getId();
     }
 }

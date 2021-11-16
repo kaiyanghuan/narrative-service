@@ -7,14 +7,20 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.util.List;
+
 @Data
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-public class BriefChapterResponse {
+public class TemplateResponse {
     private String id;
     private String name;
     private String description;
+    private String blueprintId;
+    private List<InstructionResponse> requiredInstructions;
+    private List<InstructionResponse> chooseOneInstructions;
+    private List<InstructionResponse> addOnInstructions;
     private TransactionPattern transactionPattern;
-    private State state;
+    private State state = State.INACTIVE;
 }

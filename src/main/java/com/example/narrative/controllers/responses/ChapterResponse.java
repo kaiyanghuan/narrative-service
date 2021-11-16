@@ -1,6 +1,7 @@
 package com.example.narrative.controllers.responses;
 
-import com.example.narrative.entities.State;
+import com.example.narrative.entities.enums.State;
+import com.example.narrative.entities.enums.TransactionPattern;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -20,5 +21,6 @@ public class ChapterResponse {
     private List<InstructionResponse> requiredInstructions;
     private List<InstructionResponse> chooseOneInstructions;
     private List<InstructionResponse> addOnInstructions;
+    private TransactionPattern transactionPattern;
     private State state = State.INACTIVE;
 }

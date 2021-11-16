@@ -1,6 +1,5 @@
 package com.example.narrative.services;
 
-import com.example.narrative.controllers.responses.InstructionResponse;
 import com.example.narrative.entities.Instruction;
 import com.example.narrative.exceptions.NotFoundException;
 import com.example.narrative.repositories.InstructionRepository;

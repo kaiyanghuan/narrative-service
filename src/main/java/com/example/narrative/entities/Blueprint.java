@@ -29,8 +29,11 @@ public class Blueprint {
     @Enumerated(EnumType.STRING)
     private ShareType shareType;
 
-    @Column(name = "story")
-    private String story;
+    @Column(name = "story_name")
+    private String storyName;
+
+    @Column(name = "story_description")
+    private String storyDescription;
 
     @Column(name = "tags")
     private String tags;
@@ -46,6 +49,9 @@ public class Blueprint {
 
     @Column(name = "shared_date")
     private Date sharedDate;
+
+    @Column(name = "icon")
+    private String icon;
 
     @Column(name = "adoption_rate")
     private BigInteger adoptionRate;

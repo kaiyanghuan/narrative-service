@@ -1,5 +1,6 @@
 package com.example.narrative.entities;
 
+import com.example.narrative.entities.enums.CreditType;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -7,7 +8,6 @@ import lombok.NoArgsConstructor;
 
 import java.math.BigDecimal;
 import java.util.Date;
-import java.util.UUID;
 
 @Data
 @Builder
@@ -15,10 +15,15 @@ import java.util.UUID;
 @NoArgsConstructor
 public class Transactions {
 
-    private UUID id;
+    private String id;
+    private String fromUser;
     private String fromAccount;
+    private String toUser;
     private String toAccount;
     private BigDecimal amount;
     private Date transactionDate;
-    private UUID storyId;
+    private String storyId;
+    private String description;
+    private CreditType creditType;
+    private String chapterId;
 }

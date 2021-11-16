@@ -1,6 +1,6 @@
 package com.example.narrative.controllers.responses;
 
-import com.example.narrative.entities.State;
+import com.example.narrative.entities.enums.State;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
