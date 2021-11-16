@@ -27,6 +27,10 @@ public class UserService {
         return userRepository.findByName(name).orElseThrow(() -> new NotFoundException(name + " does not exist"));
     }
 
+    public String getUserId() {
+        return getUserByName(UserContext.loggedInUsername()).getId();
+    }
+
     public User create(User user) {
         return userRepository.save(user);
     }
@@ -50,7 +54,9 @@ public class UserService {
         existingUser.setMasterAccount(otherUser.getMasterAccount());
     }
 
-    public String getUserId() {
-        return getUserByName(UserContext.loggedInUsername()).getId();
+    public User delete(String id){
+        User user = getUser(id);
+        userRepository.delete(user);
+        return user;
     }
 }

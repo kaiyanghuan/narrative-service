@@ -39,6 +39,18 @@ public class TemplateService {
         return templateRepository.save(convertStoryToTemplate(chapter, blueprintId, mask));
     }
 
+    public List<Template> deleteAllInBlueprint(UUID blueprintId){
+        List<Template> templates = getTemplates(blueprintId.toString());
+        templates.forEach(template -> templateRepository.delete(template));
+        return templates;
+    }
+
+    public Template delete(UUID id){
+        Template template = getTemplate(id);
+        templateRepository.delete(template);
+        return template;
+    }
+
     private Template convertStoryToTemplate(Chapter chapter, String blueprintId, Boolean maskChoice) {
         // Convert all Strings into Instruction Responses
         List<InstructionResponse> addOnInstructions = convertStringToInstructions(chapter.getAddOnInstructions());

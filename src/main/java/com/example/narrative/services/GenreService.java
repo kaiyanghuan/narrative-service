@@ -50,4 +50,10 @@ public class GenreService {
         existingGenre.setAddOnInstructions(otherGenre.getAddOnInstructions());
         existingGenre.setRequiredInstructions(otherGenre.getRequiredInstructions());
     }
+
+    public Genre delete(UUID id){
+        Genre genre = getGenre(id);
+        genreRepository.delete(genre);
+        return genre;
+    }
 }

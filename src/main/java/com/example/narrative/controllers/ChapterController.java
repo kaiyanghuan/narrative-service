@@ -61,4 +61,9 @@ public class ChapterController {
         return ok(responseHelper.from(chapterService.update(requestHelper.from(chapterRequest).toChapter(), id))
                 .toChapterResponse());
     }
+
+    @DeleteMapping("/{id}")
+    public ResponseEntity<ChapterResponse> deleteChapter(@PathVariable UUID id) {
+        return ok(responseHelper.from(chapterService.delete(id)).toChapterResponse());
+    }
 }

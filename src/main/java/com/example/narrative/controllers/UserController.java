@@ -52,4 +52,9 @@ public class UserController {
     public ResponseEntity<UserResponse> updateUserByName(@RequestBody User user, @PathVariable String name) {
         return ok(responseHelper.from(userService.updateByName(user, name)).toUserResponse());
     }
+
+    @DeleteMapping("/{id}")
+    public ResponseEntity<UserResponse> deleteUser(@PathVariable String id) {
+        return ok(responseHelper.from(userService.delete(id)).toUserResponse());
+    }
 }

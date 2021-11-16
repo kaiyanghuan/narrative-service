@@ -48,4 +48,10 @@ public class BlueprintService {
         blueprint.setAdoptionRate(blueprint.getAdoptionRate().add(BigInteger.ONE));
         return blueprintRepository.save(blueprint);
     }
+
+    public Blueprint delete(UUID id){
+        Blueprint blueprint = getBlueprint(id);
+        blueprintRepository.delete(blueprint);
+        return blueprint;
+    }
 }

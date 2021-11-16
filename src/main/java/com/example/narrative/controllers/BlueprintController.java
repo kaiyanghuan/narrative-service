@@ -22,6 +22,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 import java.util.stream.Collectors;
@@ -90,4 +91,9 @@ public class BlueprintController {
         return ok(responseHelper.from(story, chapters).toStoryResponse());
     }
 
+    @DeleteMapping("/{id}")
+    public ResponseEntity<BlueprintResponse> deleteBlueprint(@PathVariable UUID id) {
+        List<Template> templates = templateService.deleteAllInBlueprint(id);
+        return ok(responseHelper.from(blueprintService.delete(id), templates).toBlueprintResponse());
+    }
 }

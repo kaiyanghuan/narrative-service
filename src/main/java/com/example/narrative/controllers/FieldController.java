@@ -48,4 +48,9 @@ public class FieldController {
     public ResponseEntity<Field> updateField(@RequestBody Field field, @PathVariable String name) {
         return ok(fieldService.update(field, name));
     }
+
+    @DeleteMapping("/{id}")
+    public ResponseEntity<Field> deleteField(@PathVariable UUID id) {
+        return ok(fieldService.delete(id));
+    }
 }

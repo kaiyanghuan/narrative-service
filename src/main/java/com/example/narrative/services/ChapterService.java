@@ -90,4 +90,16 @@ public class ChapterService {
         existingChapter.setTransactionPattern(otherChapter.getTransactionPattern());
         existingChapter.setState(otherChapter.getState());
     }
+
+    public List<Chapter> deleteAllInStory(UUID storyId){
+        List<Chapter> chapters = getChapters(storyId.toString());
+        chapters.forEach(chapter -> chapterRepository.delete(chapter));
+        return chapters;
+    }
+
+    public Chapter delete(UUID id){
+        Chapter chapter = getChapter(id);
+        chapterRepository.delete(chapter);
+        return chapter;
+    }
 }

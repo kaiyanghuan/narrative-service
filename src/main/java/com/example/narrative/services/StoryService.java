@@ -30,10 +30,6 @@ public class StoryService {
         return storyRepository.findById(id.toString()).orElseThrow(() -> new NotFoundException(id + " does not exist"));
     }
 
-    public Story getStory(String name) {
-        return storyRepository.findByName(name).orElseThrow(() -> new NotFoundException(name + " does not exist"));
-    }
-
     public Story create(Story story) {
         story.setId(UUID.randomUUID().toString());
         story.setUserId(userService.getUserId());
@@ -59,15 +55,15 @@ public class StoryService {
         return storyRepository.save(existingStory);
     }
 
-    public Story update(Story otherStory, String name) {
-        Story existingStory = getStory(name);
-        updateWith(otherStory, existingStory);
-        return storyRepository.save(existingStory);
-    }
-
     public void updateWith(Story otherStory, Story existingStory) {
         existingStory.setName(otherStory.getName());
         existingStory.setDescription(otherStory.getDescription());
         existingStory.setIcon(otherStory.getIcon());
+    }
+
+    public Story delete(UUID id){
+        Story story = getStory(id);
+        storyRepository.delete(story);
+        return story;
     }
 }

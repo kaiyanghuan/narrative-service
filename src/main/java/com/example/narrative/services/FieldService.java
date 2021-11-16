@@ -53,4 +53,10 @@ public class FieldService {
         existingField.setMaskedValue(otherField.getMaskedValue());
         existingField.setDisplayName(otherField.getDisplayName());
     }
+
+    public Field delete(UUID id){
+        Field field = getField(id);
+        fieldRepository.delete(field);
+        return field;
+    }
 }

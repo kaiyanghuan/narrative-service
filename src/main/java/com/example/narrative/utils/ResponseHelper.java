@@ -109,6 +109,7 @@ public class ResponseHelper {
 
         private InstructionResponse convertToInstructionResponse(Instruction instruction) {
             return InstructionResponse.builder()
+                    .id(instruction.getId())
                     .name(instruction.getName())
                     .description(instruction.getDescription())
                     .state(State.INACTIVE)
@@ -185,6 +186,7 @@ public class ResponseHelper {
 
         public InstructionResponse toInstructionResponse() {
             return InstructionResponse.builder()
+                    .id(instruction.getId())
                     .name(instruction.getName())
                     .description(instruction.getDescription())
                     .fields(convertStringToList(instruction.getFields()).stream()

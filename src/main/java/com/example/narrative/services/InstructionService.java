@@ -50,4 +50,10 @@ public class InstructionService {
         existingInstruction.setFields(otherInstruction.getFields());
         existingInstruction.setDisplayFormat(otherInstruction.getDisplayFormat());
     }
+
+    public Instruction delete(UUID id){
+        Instruction instruction = getInstruction(id);
+        instructionRepository.delete(instruction);
+        return instruction;
+    }
 }

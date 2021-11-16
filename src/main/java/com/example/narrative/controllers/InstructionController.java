@@ -65,4 +65,9 @@ public class InstructionController {
         return ok(responseHelper.from(instructionService.update(
                 requestHelper.from(instructionRequest).toInstruction(), name)).toBriefInstructionResponse());
     }
+
+    @DeleteMapping("/{id}")
+    public ResponseEntity<InstructionResponse> deleteInstruction(@PathVariable UUID id) {
+        return ok(responseHelper.from(instructionService.delete(id)).toInstructionResponse());
+    }
 }

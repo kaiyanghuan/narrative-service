@@ -7,10 +7,7 @@ import com.example.narrative.utils.RequestHelper;
 import com.example.narrative.utils.ResponseHelper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 import java.util.UUID;
@@ -40,5 +37,10 @@ public class TemplateController {
     @GetMapping("/{id}")
     public ResponseEntity<TemplateResponse> getTemplate(@PathVariable UUID id) {
         return ok(responseHelper.from(templateService.getTemplate(id)).toTemplateResponse());
+    }
+
+    @DeleteMapping("/{id}")
+    public ResponseEntity<TemplateResponse> deleteTemplate(@PathVariable UUID id) {
+        return ok(responseHelper.from(templateService.delete(id)).toTemplateResponse());
     }
 }

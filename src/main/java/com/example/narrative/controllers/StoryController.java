@@ -47,11 +47,6 @@ public class StoryController {
         return ok(generateStoryResponse(storyService.getStory(id)));
     }
 
-    @GetMapping("/{name}/name")
-    public ResponseEntity<StoryResponse> getStory(@PathVariable String name) {
-        return ok(generateStoryResponse(storyService.getStory(name)));
-    }
-
     @PostMapping()
     public ResponseEntity<StoryResponse> createStory(@RequestBody StoryRequest storyRequest) {
         return ok(generateStoryResponse(storyService.create(requestHelper.from(storyRequest).toStory())));
@@ -62,9 +57,10 @@ public class StoryController {
         return ok(generateStoryResponse(storyService.update(requestHelper.from(storyRequest).toStory(), id)));
     }
 
-    @PutMapping("/{name}/name")
-    public ResponseEntity<StoryResponse> updateStory(@RequestBody StoryRequest storyRequest, @PathVariable String name) {
-        return ok(generateStoryResponse(storyService.update(requestHelper.from(storyRequest).toStory(), name)));
+    @DeleteMapping("/{id}")
+    public ResponseEntity<StoryResponse> deleteStory(@PathVariable UUID id) {
+        List<Chapter> chapters = chapterService.deleteAllInStory(id);
+        return ok(responseHelper.from(storyService.delete(id), chapters).toStoryResponse());
     }
 
     private StoryResponse generateStoryResponse(Story story) {

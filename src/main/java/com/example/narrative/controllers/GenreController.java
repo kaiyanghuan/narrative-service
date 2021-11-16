@@ -58,5 +58,10 @@ public class GenreController {
     public ResponseEntity<BriefGenreResponse> updateGenre(@RequestBody GenreRequest genreRequest, @PathVariable String name) {
         return ok(responseHelper.from(genreService.update(requestHelper.from(genreRequest).toGenre(), name)).toBriefGenreResponse());
     }
+
+    @DeleteMapping("/{id}")
+    public ResponseEntity<GenreResponse> deleteGenre(@PathVariable UUID id) {
+        return ok(responseHelper.from(genreService.delete(id)).toGenreResponse());
+    }
 }
 
