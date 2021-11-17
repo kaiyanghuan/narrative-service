@@ -40,6 +40,7 @@ public class ResponseHelper {
                     .name(chapter.getName())
                     .description(chapter.getDescription())
                     .transactionPattern(chapter.getTransactionPattern())
+                    .transactionType(chapter.getTransactionType())
                     .state(chapter.getState())
                     .build();
         }
@@ -54,6 +55,7 @@ public class ResponseHelper {
                     .chooseOneInstructions(ConversionHelper.convertStringToInstructions(chapter.getChooseOneInstructions()))
                     .requiredInstructions(ConversionHelper.convertStringToInstructions(chapter.getRequiredInstructions()))
                     .transactionPattern(chapter.getTransactionPattern())
+                    .transactionType(chapter.getTransactionType())
                     .state(chapter.getState())
                     .build();
         }
@@ -74,6 +76,7 @@ public class ResponseHelper {
                     .addOnInstructions(genre.getAddOnInstructions())
                     .chooseOneInstructions(genre.getChooseOneInstructions())
                     .requiredInstructions(genre.getRequiredInstructions())
+                    .transactionType(genre.getTransactionType())
                     .build();
         }
 
@@ -93,6 +96,7 @@ public class ResponseHelper {
                     .requiredInstructions(generatingInstructionResponses(genre.getRequiredInstructions()))
                     .chooseOneInstructions(generatingInstructionResponses(genre.getChooseOneInstructions()))
                     .addOnInstructions(generatingInstructionResponses(genre.getAddOnInstructions()))
+                    .transactionType(genre.getTransactionType())
                     .build();
         }
 
@@ -158,6 +162,7 @@ public class ResponseHelper {
                     .name(chapter.getName())
                     .description(chapter.getDescription())
                     .transactionPattern(chapter.getTransactionPattern())
+                    .transactionType(chapter.getTransactionType())
                     .state(chapter.getState())
                     .build();
         }
@@ -300,14 +305,17 @@ public class ResponseHelper {
                                     .transactionDate(entry.getKey())
                                     .transactionDetails(entry.getValue().stream()
                                             .map(transaction -> TransactionDetail.builder()
+                                                    .id(transaction.getId())
                                                     .amount(transaction.getAmount())
                                                     .description(transaction.getDescription())
                                                     .creditType(transaction.getCreditType())
                                                     .transactionType(transaction.getTransactionType())
+                                                    .storyId(transaction.getStoryId())
+                                                    .chapterId(transaction.getChapterId())
                                                     .build())
                                             .collect(Collectors.toList()))
                                     .build())
-                            .sorted(Comparator.comparing(TransactionHistory::getTransactionDate))
+                            .sorted(Comparator.comparing(TransactionHistory::getTransactionDate).reversed())
                             .collect(Collectors.toList()))
                     .build();
         }

@@ -27,6 +27,10 @@ public class UserService {
         return userRepository.findByName(name).orElseThrow(() -> new NotFoundException(name + " does not exist"));
     }
 
+    public User getUser() {
+        return getUserByName(UserContext.loggedInUsername());
+    }
+
     public String getUserId() {
         return getUserByName(UserContext.loggedInUsername()).getId();
     }
@@ -54,7 +58,7 @@ public class UserService {
         existingUser.setMasterAccount(otherUser.getMasterAccount());
     }
 
-    public User delete(String id){
+    public User delete(String id) {
         User user = getUser(id);
         userRepository.delete(user);
         return user;

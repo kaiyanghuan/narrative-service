@@ -1,5 +1,6 @@
 package com.example.narrative.controllers.responses;
 
+import com.example.narrative.entities.enums.TransactionType;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -16,4 +17,5 @@ public class BriefGenreResponse {
     private String requiredInstructions;
     private String chooseOneInstructions;
     private String addOnInstructions;
+    private TransactionType transactionType;
 }

@@ -84,6 +84,7 @@ public class ChapterService {
         existingChapter.setRequiredInstructions(otherChapter.getRequiredInstructions());
         existingChapter.setChooseOneInstructions(otherChapter.getChooseOneInstructions());
         existingChapter.setTransactionPattern(otherChapter.getTransactionPattern());
+        existingChapter.setTransactionType(otherChapter.getTransactionType());
         existingChapter.setState(otherChapter.getState());
     }
 

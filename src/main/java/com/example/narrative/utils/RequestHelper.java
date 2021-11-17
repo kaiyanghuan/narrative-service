@@ -103,6 +103,7 @@ public class RequestHelper {
                     .chooseOneInstructions(ConversionHelper.convertInstructionsToString(chapter.getChooseOneInstructions()))
                     .requiredInstructions(ConversionHelper.convertInstructionsToString(chapter.getRequiredInstructions()))
                     .transactionPattern(chapter.getTransactionPattern())
+                    .transactionType(chapter.getTransactionType())
                     .state(State.ACTIVE)
                     .build();
         }
@@ -147,6 +148,9 @@ public class RequestHelper {
                     .description(transactionRequest.getDescription())
                     .transactionDate(transactionRequest.getTransactionDate())
                     .creditType((transactionRequest.getAmount().compareTo(BigDecimal.ZERO) < 0) ? CreditType.DEBIT : CreditType.CREDIT)
+                    .storyId(transactionRequest.getStoryId())
+                    .chapterId(transactionRequest.getChapterId())
+                    .transactionType(transactionRequest.getTransactionType())
                     .build();
         }
     }

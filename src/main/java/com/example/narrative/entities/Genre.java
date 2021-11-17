@@ -1,14 +1,12 @@
 package com.example.narrative.entities;
 
+import com.example.narrative.entities.enums.TransactionType;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.Id;
-import javax.persistence.Table;
+import javax.persistence.*;
 import java.util.UUID;
 
 @Data
@@ -17,7 +15,7 @@ import java.util.UUID;
 @NoArgsConstructor
 @Entity
 @Table(name = "genre")
-public class Genre extends Auditable{
+public class Genre extends Auditable {
 
     @Id
     @Column(name = "id", length = 100)
@@ -37,4 +35,8 @@ public class Genre extends Auditable{
 
     @Column(name = "add_on_instructions")
     private String addOnInstructions;
+
+    @Column(name = "transaction_type")
+    @Enumerated(EnumType.STRING)
+    private TransactionType transactionType;
 }

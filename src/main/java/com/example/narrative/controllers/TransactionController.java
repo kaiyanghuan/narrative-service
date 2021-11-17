@@ -52,7 +52,7 @@ public class TransactionController {
         return ok(responseHelper.from(transactionService.getTransaction(id)).toTransactionResponse());
     }
 
-    @GetMapping("/chapter/{{chapterId}}/request")
+    @GetMapping("/chapter/{chapterId}/request")
     public ResponseEntity<TransactionResponse> requestTransaction(@PathVariable UUID chapterId) {
         return ok(responseHelper.from(transactionHelper.generateTransaction(chapterId)).toTransactionResponse());
     }
