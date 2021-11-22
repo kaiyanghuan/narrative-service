@@ -9,6 +9,7 @@ import com.example.narrative.services.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -73,9 +74,9 @@ public class ResponseHelper {
                     .id(genre.getId())
                     .name(genre.getName())
                     .description(genre.getDescription())
-                    .addOnInstructions(genre.getAddOnInstructions())
-                    .chooseOneInstructions(genre.getChooseOneInstructions())
-                    .requiredInstructions(genre.getRequiredInstructions())
+                    .addOnInstructions(ConversionHelper.convertStringToList(genre.getAddOnInstructions()))
+                    .chooseOneInstructions(ConversionHelper.convertStringToList(genre.getChooseOneInstructions()))
+                    .requiredInstructions(ConversionHelper.convertStringToList(genre.getRequiredInstructions()))
                     .transactionType(genre.getTransactionType())
                     .build();
         }
@@ -223,6 +224,28 @@ public class ResponseHelper {
         public BlueprintResponseHelper(Blueprint blueprint, List<Template> templates) {
             this.blueprint = blueprint;
             this.templates = templates;
+        }
+
+        public BlueprintResponseHelper(Blueprint blueprint) {
+            this.blueprint = blueprint;
+            templates = new ArrayList<>();
+        }
+
+        public BriefBlueprintResponse toBriefBlueprintResponse() {
+            return BriefBlueprintResponse.builder()
+                    .id(blueprint.getId())
+                    .name(blueprint.getName())
+                    .shareType(blueprint.getShareType())
+                    .tags(ConversionHelper.convertStringToList(blueprint.getTags()))
+                    .stars(blueprint.getStars())
+                    .userId(blueprint.getUserId())
+                    .username(blueprint.getUsername())
+                    .sharedDate(blueprint.getSharedDate())
+                    .icon(blueprint.getIcon())
+                    .adoptionRate(blueprint.getAdoptionRate())
+                    .storyName(blueprint.getStoryName())
+                    .storyDescription(blueprint.getStoryDescription())
+                    .build();
         }
 
         public BlueprintResponse toBlueprintResponse() {
@@ -383,6 +406,10 @@ public class ResponseHelper {
 
     public BlueprintResponseHelper from(Blueprint blueprint, List<Template> templates) {
         return new BlueprintResponseHelper(blueprint, templates);
+    }
+
+    public BlueprintResponseHelper from(Blueprint blueprint) {
+        return new BlueprintResponseHelper(blueprint);
     }
 
     public TemplateResponseHelper from(Template template) {

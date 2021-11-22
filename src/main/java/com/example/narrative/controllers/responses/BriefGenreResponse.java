@@ -6,6 +6,8 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.util.List;
+
 @Data
 @Builder
 @AllArgsConstructor
@@ -14,8 +16,8 @@ public class BriefGenreResponse {
     private String id;
     private String name;
     private String description;
-    private String requiredInstructions;
-    private String chooseOneInstructions;
-    private String addOnInstructions;
+    private List<String> requiredInstructions;
+    private List<String> chooseOneInstructions;
+    private List<String> addOnInstructions;
     private TransactionType transactionType;
 }

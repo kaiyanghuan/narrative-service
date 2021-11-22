@@ -13,4 +13,5 @@ public class AppPageRequest {
     private int size;
     private Sort.Direction direction;
     private String field;
+    private int total;
 }

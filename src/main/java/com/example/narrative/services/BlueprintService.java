@@ -1,6 +1,7 @@
 package com.example.narrative.services;
 
 import com.example.narrative.authentications.UserContext;
+import com.example.narrative.controllers.requests.BlueprintQueryRequest;
 import com.example.narrative.entities.Blueprint;
 import com.example.narrative.exceptions.NotFoundException;
 import com.example.narrative.repositories.BlueprintRepository;
@@ -29,9 +30,9 @@ public class BlueprintService {
         return blueprintRepository.findAll();
     }
 
-//    public Page<Blueprint> searchBlueprint(String keyword, Pageable pageable) {
-//        return blueprintRepository.findAll((Specification) searchKeyword(keyword), pageable);
-//    }
+    public List<Blueprint> searchBlueprint(BlueprintQueryRequest blueprintQueryRequest) {
+        return blueprintRepository.findAllByBlueprintQueryRequest(blueprintQueryRequest);
+    }
 
     public Blueprint getBlueprint(UUID id) {
         return blueprintRepository.findById(id.toString()).orElseThrow(() -> new NotFoundException(id + " does not exist"));

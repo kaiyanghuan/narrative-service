@@ -1,9 +1,9 @@
 package com.example.narrative.controllers;
 
-import com.example.narrative.controllers.requests.AppPageRequest;
 import com.example.narrative.controllers.requests.BlueprintQueryRequest;
 import com.example.narrative.controllers.requests.BlueprintRequest;
 import com.example.narrative.controllers.responses.BlueprintResponse;
+import com.example.narrative.controllers.responses.BriefBlueprintResponse;
 import com.example.narrative.controllers.responses.StoryResponse;
 import com.example.narrative.entities.Blueprint;
 import com.example.narrative.entities.Chapter;
@@ -16,13 +16,9 @@ import com.example.narrative.services.TemplateService;
 import com.example.narrative.utils.RequestHelper;
 import com.example.narrative.utils.ResponseHelper;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 import java.util.stream.Collectors;
@@ -52,16 +48,16 @@ public class BlueprintController {
     private ResponseHelper responseHelper;
 
     @GetMapping
-    public ResponseEntity<List<Blueprint>> getAllBlueprints() {
-        return ok(blueprintService.getBlueprints());
+    public ResponseEntity<List<BriefBlueprintResponse>> getAllBlueprints() {
+        return ok(blueprintService.getBlueprints().stream().map(blueprint ->
+                responseHelper.from(blueprint).toBriefBlueprintResponse()).collect(Collectors.toList()));
     }
 
-//    @PostMapping("/search")
-//    public ResponseEntity<Page<Blueprint>> searchBlueprint(@RequestBody BlueprintQueryRequest blueprintQueryRequest) {
-//        AppPageRequest pageRequest = blueprintQueryRequest.getPageRequest();
-//        Pageable pageable = PageRequest.of(pageRequest.getPage(), pageRequest.getSize(), pageRequest.getDirection(), pageRequest.getField());
-//        return ok(blueprintService.searchBlueprint(blueprintQueryRequest.getName(), pageable));
-//    }
+    @PostMapping("/search")
+    public ResponseEntity<List<BriefBlueprintResponse>> searchBlueprint(@RequestBody BlueprintQueryRequest blueprintQueryRequest) {
+        return ok(blueprintService.searchBlueprint(blueprintQueryRequest).stream().map(blueprint ->
+                responseHelper.from(blueprint).toBriefBlueprintResponse()).collect(Collectors.toList()));
+    }
 
     @GetMapping("/{id}")
     public ResponseEntity<BlueprintResponse> getBlueprint(@PathVariable UUID id) {
