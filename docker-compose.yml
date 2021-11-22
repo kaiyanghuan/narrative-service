@@ -1,0 +1,25 @@
+services:
+  mariadb:
+    image: mariadb
+    restart: always
+    expose:
+      - "6033"
+    ports:
+      - "6033:3306"
+    environment:
+      - MARIADB_DATABASE=narrative
+      - MARIADB_ROOT_PASSWORD=mariadb
+      - MARIADB_INITDB_SKIP_TZIFNO=1
+    volumes:
+      - my-datavolume:/var/lib/mysql
+  app:
+    depends_on:
+      - mariadb
+    image: shafiq98/narrative-service:4
+    expose:
+      - "8082"
+    ports:
+      - "8082:8082"
+
+volumes:
+  my-datavolume:
