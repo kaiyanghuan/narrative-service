@@ -9,8 +9,12 @@ import com.example.narrative.services.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import java.text.SimpleDateFormat;
+import java.time.LocalDate;
+import java.time.ZoneId;
 import java.util.ArrayList;
 import java.util.Comparator;
+import java.util.Date;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -240,7 +244,7 @@ public class ResponseHelper {
                     .stars(blueprint.getStars())
                     .userId(blueprint.getUserId())
                     .username(blueprint.getUsername())
-                    .sharedDate(blueprint.getSharedDate())
+                    .sharedDate(dateFormat(blueprint.getSharedDate()))
                     .icon(blueprint.getIcon())
                     .adoptionRate(blueprint.getAdoptionRate())
                     .storyName(blueprint.getStoryName())
@@ -261,7 +265,7 @@ public class ResponseHelper {
                     .stars(blueprint.getStars())
                     .userId(blueprint.getUserId())
                     .username(blueprint.getUsername())
-                    .sharedDate(blueprint.getSharedDate())
+                    .sharedDate(dateFormat(blueprint.getSharedDate()))
                     .icon(blueprint.getIcon())
                     .adoptionRate(blueprint.getAdoptionRate())
                     .storyName(blueprint.getStoryName())
@@ -322,7 +326,10 @@ public class ResponseHelper {
 
         public TransactionHistoryResponse toTransactionHistoryResponse() {
             return TransactionHistoryResponse.builder()
-                    .transactionHistories(transactions.stream().collect(groupingBy(Transaction::getTransactionDate))
+                    .transactionHistories(transactions.stream().collect(groupingBy(transaction -> {
+                                return LocalDate.ofInstant(
+                                        transaction.getTransactionDate().toInstant(), ZoneId.systemDefault());
+                            }))
                             .entrySet().stream()
                             .map(entry -> TransactionHistory.builder()
                                     .transactionDate(entry.getKey())
@@ -359,7 +366,7 @@ public class ResponseHelper {
                     .amount(transaction.getAmount())
                     .description(transaction.getDescription())
                     .creditType(transaction.getCreditType())
-                    .transactionDate(transaction.getTransactionDate())
+                    .transactionDate(dateFormat(transaction.getTransactionDate()))
                     .transactionType(transaction.getTransactionType())
                     .storyId(transaction.getStoryId())
                     .chapterId(transaction.getChapterId())
@@ -378,6 +385,11 @@ public class ResponseHelper {
                 .required(field.getRequired())
                 .value(field.getValue())
                 .build();
+    }
+
+    private static String dateFormat(Date date) {
+        SimpleDateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy");
+        return dateFormat.format(date);
     }
 
     public GenreHelper from(Genre genre) {

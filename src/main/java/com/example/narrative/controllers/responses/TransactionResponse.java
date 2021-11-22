@@ -8,7 +8,6 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.math.BigDecimal;
-import java.util.Date;
 
 @Data
 @Builder
@@ -21,7 +20,7 @@ public class TransactionResponse {
     private BigDecimal amount;
     private String description;
     private CreditType creditType;
-    private Date transactionDate;
+    private String transactionDate;
     private String storyId;
     private String chapterId;
     private TransactionType transactionType;

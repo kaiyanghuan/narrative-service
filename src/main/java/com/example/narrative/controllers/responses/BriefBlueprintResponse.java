@@ -7,7 +7,6 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.math.BigInteger;
-import java.util.Date;
 import java.util.List;
 
 @Data
@@ -22,7 +21,7 @@ public class BriefBlueprintResponse {
     private Integer stars;
     private String userId;
     private String username;
-    private Date sharedDate;
+    private String sharedDate;
     private String icon;
     private BigInteger adoptionRate;
     private String storyName;
