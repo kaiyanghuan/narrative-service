@@ -9,6 +9,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
 
 @Service
@@ -23,6 +24,10 @@ public class ChapterService {
 
     public Chapter getChapter(UUID id) {
         return chapterRepository.findById(id.toString()).orElseThrow(() -> new NotFoundException(id + " does not exist"));
+    }
+
+    public Optional<Chapter> findChapter(UUID id) {
+        return chapterRepository.findById(id.toString());
     }
 
     public Chapter create(Chapter chapter, String storyId) {
@@ -40,6 +45,7 @@ public class ChapterService {
                 .addOnInstructions(template.getAddOnInstructions())
                 .chooseOneInstructions(template.getChooseOneInstructions())
                 .requiredInstructions(template.getRequiredInstructions())
+                .transactionType(template.getTransactionType())
                 .transactionPattern(template.getTransactionPattern())
                 .state(template.getState())
                 .build();

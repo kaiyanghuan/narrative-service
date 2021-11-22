@@ -280,6 +280,7 @@ public class ResponseHelper {
                     .name(template.getName())
                     .description(template.getDescription())
                     .transactionPattern(template.getTransactionPattern())
+                    .transactionType(template.getTransactionType())
                     .state(template.getState())
                     .build();
         }
@@ -311,6 +312,7 @@ public class ResponseHelper {
                     .addOnInstructions(ConversionHelper.convertStringToInstructions(template.getAddOnInstructions()))
                     .chooseOneInstructions(ConversionHelper.convertStringToInstructions(template.getChooseOneInstructions()))
                     .requiredInstructions(ConversionHelper.convertStringToInstructions(template.getRequiredInstructions()))
+                    .transactionType(template.getTransactionType())
                     .transactionPattern(template.getTransactionPattern())
                     .state(template.getState())
                     .build();
@@ -388,6 +390,7 @@ public class ResponseHelper {
     }
 
     private static String dateFormat(Date date) {
+        if (date == null) return "";
         SimpleDateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy");
         return dateFormat.format(date);
     }
