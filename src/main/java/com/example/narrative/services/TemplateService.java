@@ -1,5 +1,6 @@
 package com.example.narrative.services;
 
+import com.example.narrative.entities.Blueprint;
 import com.example.narrative.entities.Chapter;
 import com.example.narrative.entities.Template;
 import com.example.narrative.exceptions.NotFoundException;
@@ -33,8 +34,8 @@ public class TemplateService {
         return templateRepository.findById(id.toString());
     }
 
-    public Template create(Chapter chapter, String blueprintId, Boolean mask) {
-        return templateRepository.save(templateHelper.convertStoryToTemplate(chapter, blueprintId, mask));
+    public Template create(Chapter chapter, Blueprint blueprint, Boolean mask) {
+        return templateRepository.save(templateHelper.convertStoryToTemplate(chapter, blueprint, mask));
     }
 
     public List<Template> deleteAllInBlueprint(UUID blueprintId) {

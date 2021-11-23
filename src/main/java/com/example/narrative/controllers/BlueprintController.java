@@ -71,7 +71,7 @@ public class BlueprintController {
         Blueprint blueprint = blueprintService.create(requestHelper.from(blueprintRequest).toBlueprint());
         List<Chapter> chapters = chapterService.getChapters(blueprintRequest.getStoryId());
         List<Template> templates = chapters.stream()
-                .map(chapter -> templateService.create(chapter, blueprint.getId(), blueprintRequest.getMask()))
+                .map(chapter -> templateService.create(chapter, blueprint, blueprintRequest.getMask()))
                 .collect(Collectors.toList());
         return ok(responseHelper.from(blueprint, templates).toBlueprintResponse());
     }
