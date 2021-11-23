@@ -34,6 +34,7 @@ public class RequestHelper {
                     .addOnInstructions(ConversionHelper.convertListToString(genreRequest.getAddOnInstructions()))
                     .chooseOneInstructions(ConversionHelper.convertListToString(genreRequest.getChooseOneInstructions()))
                     .requiredInstructions(ConversionHelper.convertListToString(genreRequest.getRequiredInstructions()))
+                    .transactionType(genreRequest.getTransactionType())
                     .build();
         }
     }

@@ -49,9 +49,10 @@ public class GenreService {
         existingGenre.setDescription(otherGenre.getDescription());
         existingGenre.setAddOnInstructions(otherGenre.getAddOnInstructions());
         existingGenre.setRequiredInstructions(otherGenre.getRequiredInstructions());
+        existingGenre.setTransactionType(otherGenre.getTransactionType());
     }
 
-    public Genre delete(UUID id){
+    public Genre delete(UUID id) {
         Genre genre = getGenre(id);
         genreRepository.delete(genre);
         return genre;
