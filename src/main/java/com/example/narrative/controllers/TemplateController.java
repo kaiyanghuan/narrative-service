@@ -1,5 +1,6 @@
 package com.example.narrative.controllers;
 
+import com.example.narrative.controllers.requests.ChapterRequest;
 import com.example.narrative.controllers.responses.BriefTemplateResponse;
 import com.example.narrative.controllers.responses.TemplateResponse;
 import com.example.narrative.services.TemplateService;
@@ -32,6 +33,12 @@ public class TemplateController {
     public ResponseEntity<List<BriefTemplateResponse>> getAllTemplates(@PathVariable String blueprintId) {
         return ok(templateService.getTemplates(blueprintId).stream()
                 .map(template -> responseHelper.from(template).toBriefTemplateResponse()).collect(Collectors.toList()));
+    }
+
+    @PutMapping("/{id}")
+    public ResponseEntity<TemplateResponse> updateTemplate(@RequestBody ChapterRequest templateRequest, @PathVariable UUID id) {
+        return ok(responseHelper.from(templateService.update(requestHelper.from(templateRequest).toTemplate(), id))
+                .toTemplateResponse());
     }
 
     @GetMapping("/{id}")

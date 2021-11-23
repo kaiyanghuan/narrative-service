@@ -38,6 +38,23 @@ public class TemplateService {
         return templateRepository.save(templateHelper.convertStoryToTemplate(chapter, blueprint, mask));
     }
 
+    public Template update(Template otherTemplate, UUID id) {
+        Template existingTemplate = getTemplate(id);
+        updateWith(otherTemplate, existingTemplate);
+        return templateRepository.save(existingTemplate);
+    }
+
+    public void updateWith(Template otherTemplate, Template existingTemplate) {
+        existingTemplate.setName(otherTemplate.getName());
+        existingTemplate.setDescription(otherTemplate.getDescription());
+        existingTemplate.setAddOnInstructions(otherTemplate.getAddOnInstructions());
+        existingTemplate.setRequiredInstructions(otherTemplate.getRequiredInstructions());
+        existingTemplate.setChooseOneInstructions(otherTemplate.getChooseOneInstructions());
+        existingTemplate.setTransactionPattern(otherTemplate.getTransactionPattern());
+        existingTemplate.setTransactionType(otherTemplate.getTransactionType());
+        existingTemplate.setState(otherTemplate.getState());
+    }
+
     public List<Template> deleteAllInBlueprint(UUID blueprintId) {
         List<Template> templates = getTemplates(blueprintId.toString());
         templates.forEach(template -> templateRepository.delete(template));

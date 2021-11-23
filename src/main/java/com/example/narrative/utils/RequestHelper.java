@@ -6,11 +6,13 @@ import com.example.narrative.controllers.responses.InstructionResponse;
 import com.example.narrative.entities.*;
 import com.example.narrative.entities.enums.CreditType;
 import com.example.narrative.entities.enums.State;
+import com.example.narrative.entities.enums.TransactionPattern;
 import org.springframework.stereotype.Component;
 
 import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.util.Date;
+import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 import java.util.concurrent.atomic.AtomicReference;
@@ -93,6 +95,8 @@ public class RequestHelper {
                             description.set(field.getValue());
                         }
                     }));
+
+
             String chapterName = (name.get() == null || name.get().equals("")) ? chapter.getName() : name.get();
             String chapterDescription = (description.get() == null || description.get().equals("")) ? chapter.getName() : description.get();
 
@@ -102,10 +106,40 @@ public class RequestHelper {
                     .addOnInstructions(ConversionHelper.convertInstructionsToString(chapter.getAddOnInstructions()))
                     .chooseOneInstructions(ConversionHelper.convertInstructionsToString(chapter.getChooseOneInstructions()))
                     .requiredInstructions(ConversionHelper.convertInstructionsToString(chapter.getRequiredInstructions()))
-                    .transactionPattern(chapter.getTransactionPattern())
+                    .transactionPattern(getTransactionPattern(chapter.getChooseOneInstructions()))
                     .transactionType(chapter.getTransactionType())
                     .state(State.ACTIVE)
                     .build();
+        }
+
+
+        public Template toTemplate() {
+            ChapterResponse template = chapterRequest.getChapter();
+
+            return Template.builder()
+                    .name(template.getName())
+                    .description(template.getDescription())
+                    .addOnInstructions(ConversionHelper.convertInstructionsToString(template.getAddOnInstructions()))
+                    .chooseOneInstructions(ConversionHelper.convertInstructionsToString(template.getChooseOneInstructions()))
+                    .requiredInstructions(ConversionHelper.convertInstructionsToString(template.getRequiredInstructions()))
+                    .transactionPattern(template.getTransactionPattern())
+                    .transactionType(template.getTransactionType())
+                    .state(template.getState())
+                    .build();
+        }
+
+        private TransactionPattern getTransactionPattern(List<InstructionResponse> chooseOne) {
+            Optional<InstructionResponse> instructionResponseOptional = chooseOne.stream().filter(instructionResponse -> instructionResponse.getState() == State.ACTIVE).findAny();
+            if (instructionResponseOptional.isPresent()) {
+                InstructionResponse instructionResponse = instructionResponseOptional.get();
+                if (instructionResponse.getName().equals("One-Time Transaction")) {
+                    return TransactionPattern.ONETIME;
+                } else if (instructionResponse.getName().equals("Scheduled Transaction")) {
+                    return TransactionPattern.SCHEDULED;
+                }
+                return TransactionPattern.RECURRING;
+            }
+            return null;
         }
     }
 
