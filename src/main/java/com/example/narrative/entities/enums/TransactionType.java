@@ -1,3 +1,3 @@
 package com.example.narrative.entities.enums;
 
-public enum TransactionType { PAYMENT, SAVINGS, TRANSFER }
+public enum TransactionType { PAYMENT, SAVINGS, TRANSFER, LOAN, INSTALLMENT, INVESTMENT }
